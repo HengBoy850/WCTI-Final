@@ -1,0 +1,7 @@
+node_modules
+restaurant.db
+restaurant.db-shm
+restaurant.db-wal
+.env
+uploads/*
+!uploads/.gitkeep
