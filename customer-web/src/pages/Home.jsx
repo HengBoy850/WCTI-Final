@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
+import { getImageUrl } from '../api'; // adjust path if needed based on file location
 
 const ACCENTS = ['accent-1', 'accent-2', 'accent-3', 'accent-4', 'accent-5'];
 const ACCENT_COLORS = ['#6fcf3f', '#f0398b', '#f5711b', '#2f9cf0', '#a55ee8'];
@@ -56,7 +57,7 @@ export default function Home() {
                     key={item.id}
                   >
                     <div className="mini-thumb">
-                      {item.image_url ? <img src={item.image_url} alt={item.name} /> : <span>🍽</span>}
+                      {item.image_url ? <img src={getImageUrl(item.image_url)} alt={item.name} /> : <span>🍽</span>}
                     </div>
                     <div className="mini-name">{item.name}</div>
                     <div className="mini-price">${item.price.toFixed(2)}</div>
@@ -69,7 +70,7 @@ export default function Home() {
           <div className="hero-art">
             <div className="hero-plate">
               {featured?.image_url ? (
-                <img src={featured.image_url} alt={featured.name} />
+                <img src={getImageUrl(featured.image_url)} alt={featured.name} />
               ) : (
                 <div style={{
                   width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center',

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
 import { PageHeader } from '../components/Layout';
+import { getImageUrl } from '../api'; // adjust path if needed based on file location
 
 export default function PosTerminal() {
   const { token } = useAuth();
@@ -89,7 +90,7 @@ export default function PosTerminal() {
               {filteredItems.map((item) => (
                 <button key={item.id} className="pos-item" onClick={() => updateQty(item.id, 1)}>
                   <div className="pos-item-thumb">
-                    {item.image_url ? <img src={item.image_url} alt={item.name} /> : <span className="pos-item-thumb-empty">🍽</span>}
+                    {item.image_url ? <img src={getImageUrl(item.image_url)} alt={item.name} /> : <span className="pos-item-thumb-empty">🍽</span>}
                     {cart[item.id] > 0 && <span className="pos-item-qty-pill">{cart[item.id]}</span>}
                   </div>
                   <div className="pname">{item.name}</div>

@@ -435,6 +435,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { getImageUrl } from '../api'; // adjust path if needed based on file location
 
 const ACCENTS = ['accent-1', 'accent-2', 'accent-3', 'accent-4', 'accent-5'];
 
@@ -616,7 +617,7 @@ export default function Menu() {
                 <div className={`menu-item ${ACCENTS[idx % ACCENTS.length]}`} key={item.id}>
                   <div className="menu-item-media">
                     {item.image_url ? (
-                      <img src={item.image_url} alt={item.name} />
+                      <img src={getImageUrl(item.image_url)} alt={item.name} />
                     ) : (
                       <span className="no-photo">🍽</span>
                     )}

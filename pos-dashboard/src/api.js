@@ -1,4 +1,17 @@
+// const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 const BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
+// Menu item images are stored as relative paths like "/uploads/xyz.jpg".
+// Locally, Vite's dev proxy makes that resolve correctly. In production,
+// the frontend and backend are on different domains, so we need to prefix
+// with the backend's actual origin. Blob URLs (local file previews before
+// upload) and already-absolute URLs are left untouched.
+const API_ORIGIN = BASE_URL.replace(/\/api\/?$/, '');
+export function getImageUrl(path) {
+  if (!path) return '';
+  if (path.startsWith('blob:') || path.startsWith('http')) return path;
+  return `${API_ORIGIN}${path}`;
+}
 
 async function request(path, { method = 'GET', body, token, isFormData = false } = {}) {
   const headers = {};

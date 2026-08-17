@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
+import { getImageUrl } from '../api'; // adjust path if needed based on file location
 
 const TABS = ['Menu Items', 'Categories', 'Orders', 'Reports'];
 const STATUS_OPTIONS = ['pending', 'preparing', 'ready', 'completed', 'cancelled'];
@@ -141,7 +142,7 @@ function MenuItemsTab({ token }) {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             {form.image_url ? (
-              <img src={form.image_url} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src={getImageUrl(form.image_url)} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               <span style={{ fontSize: 11, color: 'var(--muted)' }}>No photo</span>
             )}
