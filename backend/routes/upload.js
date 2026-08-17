@@ -1,30 +1,28 @@
-const path = require('path');
-const fs = require('fs');
-const crypto = require('crypto');
 const express = require('express');
 const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
 const { authRequired, requireRole } = require('../middleware/auth');
 
 const router = express.Router();
 
-const uploadDir = path.join(__dirname, '..', 'uploads');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const allowedTypes = {
-  'image/jpeg': '.jpg',
-  'image/png': '.png',
-  'image/webp': '.webp',
-  'image/gif': '.gif',
+  'image/jpeg': true,
+  'image/png': true,
+  'image/webp': true,
+  'image/gif': true,
 };
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => {
-    const ext = allowedTypes[file.mimetype] || path.extname(file.originalname) || '';
-    const unique = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}${ext}`;
-    cb(null, unique);
-  },
-});
+// Keep the file in memory instead of writing to local disk — local disk on
+// Render (and most cloud hosts) is ephemeral and gets wiped on every
+// restart/redeploy, so uploaded images would silently disappear. Cloudinary
+// gives us a permanent URL instead.
+const storage = multer.memoryStorage();
 
 function fileFilter(req, file, cb) {
   if (allowedTypes[file.mimetype]) return cb(null, true);
@@ -37,12 +35,29 @@ const upload = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
+function uploadBufferToCloudinary(buffer) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'restaurant-menu-items' },
+      (err, result) => (err ? reject(err) : resolve(result))
+    );
+    stream.end(buffer);
+  });
+}
+
 // Admin - upload a menu item image, returns a URL to store in image_url
 router.post('/image', authRequired, requireRole('admin'), (req, res) => {
-  upload.single('image')(req, res, (err) => {
+  upload.single('image')(req, res, async (err) => {
     if (err) return res.status(400).json({ error: err.message });
     if (!req.file) return res.status(400).json({ error: 'No image file provided' });
-    res.status(201).json({ url: `/uploads/${req.file.filename}` });
+
+    try {
+      const result = await uploadBufferToCloudinary(req.file.buffer);
+      res.status(201).json({ url: result.secure_url });
+    } catch (uploadErr) {
+      console.error('Cloudinary upload failed:', uploadErr);
+      res.status(500).json({ error: 'Image upload failed' });
+    }
   });
 });
 
