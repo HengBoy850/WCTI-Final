@@ -624,3 +624,102 @@ footer { background: var(--ink); color: rgba(255,255,255,0.65); padding: 30px 0;
     to { opacity: 1; }
   }
 }
+
+/* ---------- Extra phone-specific fixes (append-only, doesn't replace anything above) ---------- */
+
+/* Prevent any element (oversized circle, wide flex row, etc.) from
+   creating horizontal scroll on narrow screens — this is what was pushing
+   "Foods" and the hero art past the visible edge. */
+html, body {
+  overflow-x: hidden;
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 32px 0 20px;
+  }
+
+  .hero .eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  /* Fluid heading size instead of a fixed 34px — scales with the actual
+     viewport so long words wrap cleanly instead of overflowing. */
+  .hero h1 {
+    font-size: clamp(28px, 8vw, 34px);
+    line-height: 1.15;
+    margin: 10px 0 14px;
+  }
+
+  .hero p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .hero-actions {
+    gap: 10px;
+  }
+  .hero-actions .pill,
+  .hero-actions .pill-outline {
+    padding: 10px 16px !important;
+    font-size: 13.5px;
+  }
+
+  /* The plate/hero image was effectively full-bleed and overflowing on
+     phones — cap it to a sensible size and center it with breathing room. */
+  .hero-art {
+    max-width: 240px;
+    margin: 28px auto 0;
+  }
+  .hero-badge {
+    padding: 10px 14px;
+    min-width: 130px;
+    bottom: 4%;
+    left: 3%;
+  }
+  .hero-badge .name {
+    font-size: 13px;
+  }
+  .hero-badge .time {
+    font-size: 10.5px;
+    padding: 4px 8px;
+  }
+
+  /* Mini carousel: slightly smaller cards so more of the next one peeks
+     into view (intentional scroll hint), and tighter gaps. */
+  .mini-carousel {
+    gap: 10px;
+    margin-top: 22px;
+  }
+  .mini-card {
+    width: 92px;
+    padding: 10px 8px 12px;
+    border-radius: 18px;
+  }
+  .mini-card .mini-thumb {
+    width: 52px;
+    height: 52px;
+  }
+  .mini-card .mini-name {
+    font-size: 12px;
+  }
+  .mini-card .mini-price {
+    font-size: 11px;
+  }
+
+  section {
+    padding: 40px 0;
+  }
+  .section-title {
+    font-size: 24px;
+  }
+  .section-sub {
+    font-size: 13.5px;
+    margin-bottom: 22px;
+  }
+
+  .container {
+    padding: 0 14px;
+  }
+}
