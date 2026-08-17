@@ -23,7 +23,7 @@ const allowedOrigins = [
   process.env.POS_DASHBOARD_URL || 'http://localhost:5174',
 ];
 const previewUrlPatterns = [
-  /^https:\/\/wcti-customer-web[\w-]*\.vercel\.app$/,
+  /^https:\/\/wcti-final-web[\w-]*\.vercel\.app$/,
   /^https:\/\/wcti-final-pos-dashboard[\w-]*\.vercel\.app$/,
 ];
 
